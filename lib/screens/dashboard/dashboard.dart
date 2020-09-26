@@ -1,4 +1,5 @@
 //import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hunar_seller/screens/dashboard/sellerprofile.dart';
 //import 'package:hunar_seller/screens/manager.dart';
@@ -15,7 +16,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final AuthService _auth = AuthService();
-  var uid;
+  var uid,  collection='test';
   void initState(){
     getUser();
     print('Getting user');
@@ -24,6 +25,15 @@ class _DashboardState extends State<Dashboard> {
   void getUser()async{
       uid=await _auth.getUser();
       print(uid);
+      FirebaseFirestore.instance.collection(collection).doc(uid).get().then((DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.exists) {
+          print('Document data: ${documentSnapshot.data()}');
+          //data = documentSnapshot.data();
+          data = documentSnapshot.data();
+        } else {
+          print('Document does not exist on the database');
+        }
+      });
   }
   Map data;
 
@@ -33,7 +43,7 @@ class _DashboardState extends State<Dashboard> {
       showModalBottomSheet(context: context, builder: (context) {
         return Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-          child: SellerProfile(),
+          child: SellerProfile(data:data),
         );
       });
     }
