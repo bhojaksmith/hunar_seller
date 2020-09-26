@@ -3,37 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:hunar_seller/services/auth.dart';
 
 class SellerProfile extends StatefulWidget {
+  final Map data;
+
+  SellerProfile({this.data});
   @override
-  _SellerProfileState createState() => _SellerProfileState();
+  _SellerProfileState createState() => _SellerProfileState(data:data);
 }
 
 class _SellerProfileState extends State<SellerProfile> {
-  AuthService _auth =AuthService();
-  Map data={};
-  var uid;
-  void initState(){
-    getUser();
-    getSellerProfile();
-    print('Getting user');
-    super.initState();
-  }
-  void getUser()async{
-    uid=await _auth.getUser();
-    print(uid);
-  }
-  void getSellerProfile()async{
-    //FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    FirebaseFirestore.instance.collection('users').doc(uid).get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        print('Document data: ${documentSnapshot.data()}');
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
+  final Map data;
+  _SellerProfileState({this.data});
+
+
+
+
+  void initState(){
+
+    super.initState();
   }
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       body: Container(
 
@@ -46,10 +38,15 @@ class _SellerProfileState extends State<SellerProfile> {
                   ),
                    SizedBox(height: 20,),
                    Text(
-                    '${data["name"]}',
+                    '${data["sellerName"]}',
                         style: TextStyle(fontSize: 32),
+                   ),
+                   SizedBox(height: 20,),
+                   Text(
+                     '${data["sellerCity"]}',
+                     style: TextStyle(fontSize: 20),
                    )
-             ],
+                 ],
            ),
          ),
       ),
