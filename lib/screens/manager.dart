@@ -28,22 +28,22 @@ class _ManagerState extends State<Manager> {
     print(uid);
   }
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Dashboard',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Product',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: Orders',
-      style: optionStyle,
-    ),
-  ];
+  // static const TextStyle optionStyle =
+  // TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  // static const List<Widget> _widgetOptions = <Widget>[
+  //   Text(
+  //     'Index 0: Dashboard',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 1: Product',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 2: Orders',
+  //     style: optionStyle,
+  //   ),
+  // ];
 
   //Object get getuser => ;
 
