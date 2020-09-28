@@ -30,6 +30,8 @@ dependencies:
   hexcolor: ^1.0.4
   font_awesome_flutter: ^8.8.1
   bezier_chart: ^1.0.17+1
+  image_picker: ^0.6.0+17
+  firebase_storage: ^4.0.0
 
 
 
