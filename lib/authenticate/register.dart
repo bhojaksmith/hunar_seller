@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hunar_seller/authenticate/register2.dart';
 import 'package:hunar_seller/services/auth.dart';
+import 'package:image_picker/image_picker.dart';
 class Register extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();
@@ -10,6 +14,33 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   var uid;
+  File _image;
+  String _uploadedFileURL;
+  Future chooseFile() async {
+    // ignore: deprecated_member_use
+    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+      setState(() {
+        _image = image;
+      });
+    });
+    uploadFile();
+  }
+
+  Future uploadFile() async {
+    uid=await _auth.getUser();
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+    //.child('test/$uid/${Path.basename(_image.path)}}');
+        .child('test/profile/$uid');
+    StorageUploadTask uploadTask = storageReference.putFile(_image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
+  }
   void initState(){
     getUser();
     print('Getting user');
@@ -90,6 +121,54 @@ class _RegisterState extends State<Register> {
                   )),
 
               SizedBox(height: 20,),
+              Column(
+
+                  children: [
+                    // Text('Selected Image'),
+                    // _image != null
+                    //     ? Image.asset(
+                    //   _image.path,
+                    //   height: 150,
+                    // )
+                    //     : Container(height: 150),
+                    _image == null
+                        ? RaisedButton(
+                      child: Text('Upload Profile Picture'),
+                      onPressed: chooseFile,
+                      color: Colors.cyan,
+                    )
+                        : Container(),
+                    // _image != null
+                    //     ? RaisedButton(
+                    //   child: Text('Upload File'),
+                    //   onPressed: uploadFile,
+                    //   color: Colors.cyan,
+                    // )
+                    //     : Container(),
+                    _image != null
+                        ? RaisedButton(
+                      child: Text('Select Another?'),
+                      onPressed: (){
+                        chooseFile();
+                        // setState(() {
+                        //   _image = null;
+                        // });
+                      },
+                    )
+                        : Container(),
+                    Text('Uploaded Image'),
+                    _uploadedFileURL != null
+                        ? CircleAvatar(
+                      radius: 90,
+                          backgroundImage: NetworkImage(
+                      _uploadedFileURL,
+
+                    ),
+                        )
+                        : Container(),
+                  ],
+                ),
+
               Padding(
                   padding: EdgeInsets.only(left: 25.0, right: 25.0),
                   child: ClipRRect(
@@ -104,6 +183,7 @@ class _RegisterState extends State<Register> {
                           Map<String,dynamic> testData = {
                             'sellerName': sellerName ,
                             'sellerDescription': sellerDescription ,
+                            'sellerImage':_uploadedFileURL,
                           };
                           // ignore: deprecated_member_use
                           CollectionReference collectionReference = Firestore.instance.collection('test');
