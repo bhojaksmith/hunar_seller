@@ -45,8 +45,8 @@ class AuthService extends StatelessWidget {
   }
   getUser()async{
     FirebaseAuth auth = FirebaseAuth.instance;
-    final User user =  auth.currentUser;
-    return user.uid;
+    final User currentUser =  auth.currentUser;
+    return currentUser.uid;
   }
   @override
   Widget build(BuildContext context) {
