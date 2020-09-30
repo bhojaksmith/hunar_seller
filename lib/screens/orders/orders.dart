@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:hunar_seller/shared/appnav.dart';
 
 class Orders extends StatefulWidget {
   @override
@@ -9,18 +11,17 @@ class _OrdersState extends State<Orders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-          padding: EdgeInsets.all(32),
-          child: Row(
+      backgroundColor: Hexcolor('#f1f1f1'),
+      body: SafeArea(
 
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
 
-            children: <Widget>[
-              Text("Orders", textAlign: TextAlign.center,style: TextStyle(color: Colors.lightBlue[200], fontSize: 32),),
 
-            ],
-          ),
+          children: [
+            AppNav(),
+          ],
         ),
+      ),
     );
   }
 }

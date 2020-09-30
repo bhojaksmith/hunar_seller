@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hunar_seller/authenticate/register3.dart';
+import 'package:hunar_seller/screens/manager.dart';
+import 'package:hunar_seller/screens/products/products.dart';
 import 'package:hunar_seller/services/auth.dart';
-class Register2 extends StatefulWidget {
-
-
+class AddProduct2 extends StatefulWidget {
+  final productName,productPrice,productURL;
+  AddProduct2({
+    this.productName,
+    this.productPrice,
+    this.productURL,
+  });
   @override
-  _Register2State createState() => _Register2State();
-
-
+  _AddProduct2State createState() => _AddProduct2State(productName:productName,productPrice:productPrice,productURL:productURL);
 }
 
-class _Register2State extends State<Register2> {
+class _AddProduct2State extends State<AddProduct2> {
+  final productName,productPrice,productURL;
+  _AddProduct2State({
+
+    this.productName,
+    this.productPrice,
+    this.productURL,
+  });
   final AuthService _auth = AuthService();
   var uid;
   void initState(){
@@ -24,7 +35,7 @@ class _Register2State extends State<Register2> {
     print(uid);
   }
   final formKey = new GlobalKey<FormState>();
-  String sellerState='Gujarat',sellerCity='Ahmedabad',sellerAddress;
+  String productCategory='Food & Snacks',productDescription,productKeywords;
 
   @override
   Widget build(BuildContext context) {
@@ -36,23 +47,12 @@ class _Register2State extends State<Register2> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Padding(
-              //     padding: EdgeInsets.only(left: 5, right: 0,top:50,bottom: 0),
-              //     child: Text(
-              //       'hunar',
-              //       style: TextStyle(
-              //         color: Colors.blue[200],
-              //         fontSize: 80,
-              //         fontWeight:FontWeight.w100,
-              //       ),
-              //     )
-              // ),
 
               Center(
                 child: Padding(
                     padding: EdgeInsets.only(left: 5, right: 0,top:50,bottom: 5),
                     child: Text(
-                      'Register Your Business ',
+                      'Add Product Details',
                       style: TextStyle(
                         fontSize: 32,
                         color:Colors.black,
@@ -63,46 +63,13 @@ class _Register2State extends State<Register2> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 25.0,top: 10,bottom: 10),
-                child: Text('Select State'),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(left: 25.0, right: 25.0),
-
-                  child:DropdownButton<String>(
-                    value: sellerState,
-
-                    //icon: Icon(Icons.arrow_downward),
-                    iconSize: 0,
-                    elevation: 4,
-                    style: TextStyle(color: Colors.blue),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blueAccent,
-                    ),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        sellerState = newValue;
-                      });
-                    },
-                    items: <String>['Gujarat', 'Maharastra', 'Madhyapradesh', 'Rajasthan']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                  ),
-              // have to change cities based on selected state later
-              Padding(
-                padding: const EdgeInsets.only(left: 25.0,top: 10,bottom: 10),
-                child: Text('Select City'),
+                child: Text('Select Category '),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 25.0, right: 25.0),
 
                 child:DropdownButton<String>(
-                  value: sellerCity,
+                  value: productCategory,
 
                   //icon: Icon(Icons.arrow_downward),
                   iconSize: 0,
@@ -114,10 +81,10 @@ class _Register2State extends State<Register2> {
                   ),
                   onChanged: (String newValue) {
                     setState(() {
-                      sellerCity = newValue;
+                      productCategory = newValue;
                     });
                   },
-                  items: <String>['Ahmedabad', 'Surat', 'Junagadh', 'Vadodra']
+                  items: <String>['Food & Snacks', 'Puja & Saman', 'Art', 'Beauty & Health']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -126,20 +93,38 @@ class _Register2State extends State<Register2> {
                   }).toList(),
                 ),
               ),
+              // have to change cities based on selected state later
               Padding(
                   padding: EdgeInsets.only(left: 25.0, right: 25.0),
                   child: TextFormField(
                     keyboardType: TextInputType.text,
 
                     decoration:InputDecoration(
-                      labelText: 'Address',
+                      labelText: 'Product Description',
                       labelStyle: TextStyle(
                         color: Colors.grey,
                       ),
                     ),
                     onChanged: (val) {
                       setState(() {
-                        this.sellerAddress = val;
+                        this.productDescription = val;
+                      });
+                    },
+                  )),
+              Padding(
+                  padding: EdgeInsets.only(left: 25.0, right: 25.0),
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
+
+                    decoration:InputDecoration(
+                      labelText: 'Product Keywords',
+                      labelStyle: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                    onChanged: (val) {
+                      setState(() {
+                        this.productKeywords = val;
                       });
                     },
                   )),
@@ -156,18 +141,22 @@ class _Register2State extends State<Register2> {
                         ),
                         onPressed: () {
                           Map<String,dynamic> testData = {
-                            'sellerCity': sellerCity ,
-                            'sellerState': sellerState ,
-                            'sellerAddress': sellerAddress,
+                              'userID': uid,
+                              'productName': productName,
+                              'productPrice': productPrice,
+                              'productURL': productURL,
+                            'productCategory': productCategory ,
+                            'productDescription': productDescription ,
+                            'productKeywords': productKeywords,
                           };
                           // ignore: deprecated_member_use
                           CollectionReference collectionReference = Firestore.instance.collection('testSeller');
                           // ignore: deprecated_member_use
                           // only use set data for inserting the first time
-                          collectionReference.doc(uid).update(testData);
+                          collectionReference.doc(uid).collection('products').add(testData);
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Register3()),
+                            MaterialPageRoute(builder: (context) => Manager()),
                           );
                         }
                     ),
