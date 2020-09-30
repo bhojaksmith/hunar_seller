@@ -74,7 +74,7 @@ class _Register3State extends State<Register3> {
                             'sellerCategories': sellerCategories ,
                           };
                           // ignore: deprecated_member_use
-                          CollectionReference collectionReference = Firestore.instance.collection('test');
+                          CollectionReference collectionReference = Firestore.instance.collection('testSeller');
                           // ignore: deprecated_member_use
                           // only use set data for inserting the first time
                           collectionReference.doc(uid).update(testData);
