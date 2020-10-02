@@ -20,8 +20,10 @@ class AuthService extends StatelessWidget {
             return Manager() if data in Sellers collection
             else Register()
             */
+            print('user exists');
             return Manager();
           } else {
+            print('Auth Failed');
             return LoginScreen();
           }
         });
@@ -45,8 +47,8 @@ class AuthService extends StatelessWidget {
   }
   getUser()async{
     FirebaseAuth auth = FirebaseAuth.instance;
-    final User user =  auth.currentUser;
-    return user.uid;
+    final User currentUser =  auth.currentUser;
+    return currentUser.uid;
   }
   @override
   Widget build(BuildContext context) {

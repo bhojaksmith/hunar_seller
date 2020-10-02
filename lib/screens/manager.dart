@@ -16,34 +16,53 @@ class Manager extends StatefulWidget {
 }
 
 class _ManagerState extends State<Manager> {
+
+  Map data,productData;
+
   final AuthService _auth = AuthService();
-  var uid;
+  var uid,collection='testSeller';
   void initState(){
     getUser();
-    print('Getting user');
+
     super.initState();
   }
   void getUser()async{
     uid=await _auth.getUser();
     print(uid);
+    FirebaseFirestore.instance.collection(collection).doc(uid).get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('manager.dart');
+        print('Document data: ${documentSnapshot.data()}');
+        //data = documentSnapshot.data();
+        data = documentSnapshot.data();
+      } else {
+        print(' Manager.dart:Document does not exist on the database');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Register()),
+        );
+      }
+    });
+
   }
+
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Dashboard',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Product',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: Orders',
-      style: optionStyle,
-    ),
-  ];
+  // static const TextStyle optionStyle =
+  // TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  // static const List<Widget> _widgetOptions = <Widget>[
+  //   Text(
+  //     'Index 0: Dashboard',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 1: Product',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 2: Orders',
+  //     style: optionStyle,
+  //   ),
+  // ];
 
   //Object get getuser => ;
 
@@ -60,44 +79,38 @@ class _ManagerState extends State<Manager> {
 
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder (
-        stream: FirebaseFirestore.instance.collection('test').doc(uid).snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
 
-            return Register();
-            //print('no data');
+
+
+            return Scaffold(
+
+              body: tabs[_selectedIndex],
+
+              bottomNavigationBar: BottomNavigationBar(
+                items: const <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home),
+                    title: Text('Dashboard'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.inbox),
+                    title: Text('Products'),
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.shopping_cart),
+                    title: Text('Orders'),
+                  ),
+                ],
+                currentIndex: _selectedIndex,
+                selectedItemColor: Colors.blue[200],
+                onTap: _onItemTapped,
+              ),
+            );
+
           }
-          print('we have data');
-          return Scaffold(
-
-            body: tabs[_selectedIndex],
-
-            bottomNavigationBar: BottomNavigationBar(
-              items: const <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  title: Text('Dashboard'),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.inbox),
-                  title: Text('Products'),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.shopping_cart),
-                  title: Text('Orders'),
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colors.blue[200],
-              onTap: _onItemTapped,
-            ),
-          );
-        }
-    );
 
   }
-}
+
 
 
 
