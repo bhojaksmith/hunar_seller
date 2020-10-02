@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 //import 'package:hunar_seller/authenticate/register.dart';
 //import 'package:hunar_seller/screens/dashboard/dashboard.dart';
 import 'package:hunar_seller/authenticate/login.dart';
+import 'package:hunar_seller/screens/dashboard/dashboard.dart';
 import 'package:hunar_seller/screens/manager.dart';
 //import 'package:cloud_firestore/cloud_firestore.dart';
 class AuthService extends StatelessWidget {
@@ -20,8 +21,10 @@ class AuthService extends StatelessWidget {
             return Manager() if data in Sellers collection
             else Register()
             */
+            print('user exists');
             return Manager();
           } else {
+            print('Auth Failed');
             return LoginScreen();
           }
         });
@@ -45,8 +48,8 @@ class AuthService extends StatelessWidget {
   }
   getUser()async{
     FirebaseAuth auth = FirebaseAuth.instance;
-    final User user =  auth.currentUser;
-    return user.uid;
+    final User currentUser =  auth.currentUser;
+    return currentUser.uid;
   }
   @override
   Widget build(BuildContext context) {
